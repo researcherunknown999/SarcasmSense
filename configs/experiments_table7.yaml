@@ -1,0 +1,54 @@
+# Ablations: removing MHCA, GMF, both, or one modality (while keeping MHCA+GMF on remaining)
+base_config: configs/default.yaml
+seeds: [1,2,3,4,5,6,7,8,9,10]
+
+variants:
+  - name: full_mhca_gmf
+    overrides:
+      model.fusion_mode: mhca_gmf
+      model.use_text: true
+      model.use_audio: true
+      model.use_video: true
+
+  - name: wo_gmf_concat
+    overrides:
+      model.fusion_mode: mhca_only   # MHCA present, no GMF (combine via concat_proj)
+      model.use_text: true
+      model.use_audio: true
+      model.use_video: true
+
+  - name: wo_mhca_static
+    overrides:
+      model.fusion_mode: gmf_only    # GMF present, no MHCA (static pooled)
+      model.use_text: true
+      model.use_audio: true
+      model.use_video: true
+
+  - name: wo_both_concat
+    overrides:
+      model.fusion_mode: concat      # no MHCA + no GMF
+      model.use_text: true
+      model.use_audio: true
+      model.use_video: true
+
+  # Modality removal (keep MHCA+GMF on remaining modalities)
+  - name: wo_audio_text_video
+    overrides:
+      model.fusion_mode: mhca_gmf
+      model.use_text: true
+      model.use_audio: false
+      model.use_video: true
+
+  - name: wo_video_text_audio
+    overrides:
+      model.fusion_mode: mhca_gmf
+      model.use_text: true
+      model.use_audio: true
+      model.use_video: false
+
+  - name: wo_text_audio_video
+    overrides:
+      model.fusion_mode: mhca_gmf
+      model.use_text: false
+      model.use_audio: true
+      model.use_video: true
