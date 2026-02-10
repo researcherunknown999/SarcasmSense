@@ -1,0 +1,65 @@
+repro:
+  deterministic: true
+
+data:
+  manifest: manifest.csv
+  stratify_split_if_missing: true
+  split:
+    train: 0.80
+    val: 0.10
+    test: 0.10
+  num_workers: 4
+
+  # utterance-level preprocessing bounds (as used in data loader)
+  max_text_len: 128
+  audio_sr: 16000
+  audio_max_sec: 10.0
+  video_num_frames: 32
+  video_size: 224
+
+model:
+  # Backbones (replace with exact ones used in your manuscript if needed)
+  text_model_name: microsoft/deberta-v3-base
+  audio_model_name: facebook/wav2vec2-base
+  video_model_name: facebook/timesformer-base-finetuned-k400
+
+  d_model: 256
+  dropout: 0.10
+
+  # Fusion choices: mhca_gmf | mhca_only | gmf_only | concat
+  fusion_mode: mhca_gmf
+  mhca_heads: 4
+  gmf_hidden: 256
+
+  # OpenFace AU token
+  use_openface: true
+  openface_dim: 35
+
+  # Tasks
+  num_target_classes: 5
+
+  # Modality toggles (for modality-removal experiments)
+  use_text: true
+  use_audio: true
+  use_video: true
+
+train:
+  batch_size: 8
+  max_epochs: 30
+  early_stop_patience: 5
+
+  amp: true
+  grad_clip: 1.0
+
+  lr_text: 3e-5
+  lr_av: 1e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.10
+
+  alpha_sarc: 0.60
+  alpha_shift: 0.25
+  alpha_target: 0.15
+
+  with_auc: true
+  with_bootstrap_ci: true
+  n_boot: 2000
