@@ -1,0 +1,29 @@
+# One-at-a-time hyperparameter sensitivity around defaults
+base_config: configs/default.yaml
+seeds: [1,2,3,4,5,6,7,8,9,10]
+
+# Evaluate sensitivity around the FULL model (mhca_gmf) by default:
+base_variant_overrides:
+  model.fusion_mode: mhca_gmf
+  model.use_text: true
+  model.use_audio: true
+  model.use_video: true
+
+sweeps:
+  - param: train.dropout
+    values: [0.05, 0.10, 0.20]
+
+  - param: model.gmf_hidden
+    values: [128, 256, 512]
+
+  - param: model.mhca_heads
+    values: [2, 4, 8]
+
+  - param: train.lr_text
+    values: [1.0e-5, 3.0e-5, 5.0e-5]
+
+  - param: train.lr_av
+    values: [5.0e-5, 1.0e-4, 2.0e-4]
+
+  - param: train.batch_size
+    values: [4, 8, 16]
